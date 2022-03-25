@@ -17,7 +17,7 @@ The only mandatory input from the user are **data** and **grouplabels**.
 | score | Either "activity" (default) or "deregulation" based on what the returned pathway scores should reflect (more details below). |
 | nodemin | Indicates the minimum nuber of measured nodes in a pathway to be analysed (default 5). Pathways with fewer measured nodes are excluded from the analysis. |
 | info | A data frame including all variables to be used in the model fitting in the neutralisation step as columns. Rows correspond to samples in **data**. Rows and columns should be named. |
-| neutralize | A logical vector indicating which coefficients in 'info' should be neutralised (T=neutralise, F=use in model fitting, but don't neutralise). The length should match the number of columns in **info**. |
+| neutralize | A logical vector indicating which coefficients in **info** should be neutralised (T=neutralise, F=use in model fitting, but don't neutralise). The length should match the number of columns in **info**. |
 | mainfeature | A numeric or character vector corresponding to samples (cols in 'data'). If provided, pathways' significance levels according to this coefficient are returned.|
 
 In case the expression data contains no sample groups, **grouplabels** can be set to dummy value of only zeros rep(0,ncol(data)).
