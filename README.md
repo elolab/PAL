@@ -24,7 +24,7 @@ In case the expression data contains no sample groups, **grouplabels** can be se
 
 There are two options for argument **score**. The default one is "activity" and if it is selected, the final pathway scores indicate how active each pathway is in comparison to the other samples. Negative value indicate inactivity, value close to 0 normal activity, and positive value high activity. If **score** is set to "deregulation", the pathway scores indicate how normally the pathways behave as compared to a typical control sample. Value close to 0 means that the pathway is not deregulated and a high value means that it is.
 
-The main function PAL returns a list with two or three elements: a matrix of pathway scores, a matrix of significance levels and coefficients (only is argument **mainfeature** is provided) of the analysed pathways, and an info matrix describing the analysed pathways. The pathway scores can be used for further analyses.
+The main function PAL returns a list with two or three elements: a matrix of pathway scores, a matrix of significance levels and coefficients (only if argument **mainfeature** is provided) of the analysed pathways, and an info matrix describing the analysed pathways. The pathway scores can be used for further analyses.
 
 
 ##### References
