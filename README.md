@@ -1,6 +1,6 @@
 # PAL description
 
-Pathway Analysis of Longitudinal data (PAL) is a pathway analysis tool that provides pathway values for each analysed sample and pathway separately. PAL allows the analysis of complex study designs such as longitudinal data. Details about the algorithm are available in the original open access publication "Pathway analysis of longitudinal data with case studies in early type 1 diabetes" [1] (please cite it if you utilise PAL in your research). In case of bugs, missing documentation, or problems with installation, please contact us: maria.jaakkola@utu.fi
+Pathway Analysis of Longitudinal data (PAL) is a pathway analysis tool that provides pathway values for each analysed sample and pathway separately. PAL allows the analysis of complex study designs such as longitudinal data and the effect of some variables (e.g. age) can be neutralised (see arguments **info** and **neutralize**) prior to the pathway analysis. Details about the algorithm are available in the original open access publication "Pathway analysis of longitudinal data with case studies in early type 1 diabetes" [1] (please cite it if you utilise PAL in your research). In case of bugs, missing documentation, or problems with installation, please contact us: maria.jaakkola@utu.fi
 
 PAL can be installed by opening R and typing devtools::install_github("elolab/PAL") (requires package devtools to be installed). Notably, usage of PAL requires installation of R package PASI (devtools::install_github("elolab/PASI"))
 
@@ -18,7 +18,7 @@ The only mandatory input from the user are **data** and **grouplabels**.
 | nodemin | Indicates the minimum nuber of measured nodes in a pathway to be analysed (default 5). Pathways with fewer measured nodes are excluded from the analysis. |
 | info | A data frame including all variables to be used in the model fitting in the neutralisation step as columns. Rows correspond to samples in **data**. Rows and columns should be named. |
 | neutralize | A logical vector indicating which coefficients in **info** should be neutralised (T=neutralise, F=use in model fitting, but don't neutralise). The length should match the number of columns in **info**. |
-| mainfeature | A numeric or character vector corresponding to samples (cols in 'data'). If provided, pathways' significance levels according to this coefficient are returned.|
+| mainfeature | A numeric or character vector corresponding to samples (cols in 'data'). If provided, pathways' significance levels according to this coefficient are returned. Can include NA for some samples.|
 
 In case the expression data contains no sample groups, **grouplabels** can be set to dummy value of only zeros rep(0,ncol(data)).
 
