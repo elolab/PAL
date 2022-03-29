@@ -30,6 +30,7 @@ The main function PAL returns a list with two or three elements: a matrix of pat
 ##### References
 
 [1] Add publication info when known
-[2] Maria K Jaakkola, Aidan J McGlinchey, Riku Klén, and Laura L Elo: PASI: A novel pathway method to identify delicate group effects. PLoS one 2018; 13(7):e0199991. CHANGE NOT VISIBLE
+
+[2] Maria K Jaakkola, Aidan J McGlinchey, Riku Klén, and Laura L Elo: PASI: A novel pathway method to identify delicate group effects. PLoS one 2018; 13(7):e0199991. 
 
 
