@@ -47,8 +47,10 @@ Maria K. Jaakkola
 }
 
 \examples{
-# Run PAL for data frame mydata (microarray data), which includes samples from two groups to obtain pathway activity scores.
-# pasiexample = PASI(mydata, grouplabels=c(rep(0,19),rep(1,15)))
+# Run PAL for data frame mydata, which includes samples from two groups to obtain pathway activity scores.
+# labels = rep(c(0,1), times=c(20,18))
+# timetodiagnosis = as.numeric(info[colnames(mydata), "TimeToDiagnosis"])
+# res = PAL(mydata, grouplabels=labels, info=info[colnames(mydata),c("Age","Donor")], neutralize=c(T,F), mainfeature=timetodiagnosis)
 }
 
 \keyword{ design }
