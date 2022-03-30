@@ -24,14 +24,14 @@ In case the expression data contains no sample groups, **grouplabels** can be se
 
 File format for the user defined pathways in **pathwayadress** is a .txt file. Each pathway file should include the pathway's name as the first row and the following rows including nodes ans relations. Node-lines should include only the Entrez gene id of the node. Relation-lines include three elemnts separated with a space: Entrez gene id of the start node (first), Entrez gene id of the end node (second), and either + or - indicating activation or inhibition, respectively (third). A toy example with five nodes (Entrez gene ids 5269, 8828, 10938, 1203, 8824) and three relations (5269 and 8828 activating 10938, and 8828 inhibiting 1203) is given below.
 
-Pathway name here
-5269
-8828
-10938
-1203
-8824
-5269 10938 +
-8828 10938 +
+Pathway name here  
+5269  
+8828  
+10938  
+1203  
+8824  
+5269 10938 +  
+8828 10938 +  
 8828 1203 -
 
 Argument **datatype** defines the default value for **noisedefault** in log2 scale, which is different fot microarray data and RNAseq data (RNAseq has lower noise level). If the analysed data is neither, do nothing about argument **datatype** and set argument **noisedefault** to NA, and do the possible filtering of the data prior to PAL analysis.
