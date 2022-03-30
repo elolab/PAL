@@ -22,6 +22,20 @@ The only mandatory input from the user are **data** and **grouplabels**.
 
 In case the expression data contains no sample groups, **grouplabels** can be set to dummy value of only zeros rep(0,ncol(data)).
 
+File format for the user defined pathways in **pathwayadress** is a .txt file. Each pathway file should include the pathway's name as the first row and the following rows including nodes ans relations. Node-lines should include only the Entrez gene id of the node. Relation-lines include three elemnts separated with a space: Entrez gene id of the start node (first), Entrez gene id of the end node (second), and either + or - indicating activation or inhibition, respectively (third). A toy example with five nodes (Entrez gene ids 5269, 8828, 10938, 1203, 8824) and three relations (5269 and 8828 activating 10938, and 8828 inhibiting 1203) is given below.
+
+A toy example with four nodes (Entrez gene ids 5269, 8828, 10938, 1203) and three relations (5269 and 8828 activating 10938, and 8828 inhibiting 1203) is given below.
+$$\begin{array}{ccc}
+5269 \\
+8828 \\
+10938 \\
+1203 \\
+8824 \\
+5269 & 10938 & + \\
+8828 & 10938 & + \\
+8828 & 1203 & - \\
+\end{array}$$
+
 Argument **datatype** defines the default value for **noisedefault** in log2 scale, which is different fot microarray data and RNAseq data (RNAseq has lower noise level). If the analysed data is neither, do nothing about argument **datatype** and set argument **noisedefault** to NA, and do the possible filtering of the data prior to PAL analysis.
 
 If **noisedefault** is not NA, PAL filters out genes with median expression below a cutoff in all sample groups. The cutoff is detected from the data and **noisedefault** is the log2-scale default value for it.  
@@ -35,6 +49,4 @@ The main function PAL returns a list with two or three elements: a matrix of pat
 
 [1] Add publication info when known
 
-[2] Maria K Jaakkola, Aidan J McGlinchey, Riku Klén, and Laura L Elo: PASI: A novel pathway method to identify delicate group effects. PLoS one 2018; 13(7):e0199991. 
-
-
+[2] Maria K Jaakkola, Aidan J McGlinchey, Riku Klén, and Laura L Elo: PASI: A novel pathway method to identify delicate group effects. PLoS one 2018; 13(7):e0199991. 	
