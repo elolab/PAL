@@ -22,7 +22,7 @@ The only mandatory input from the user are **data** and **grouplabels**.
 
 In case the expression data contains no sample groups, **grouplabels** can be set to dummy value of only zeros rep(0,ncol(data)).
 
-File format for the user defined pathways in **pathwayadress** is a .txt file. Each pathway file should include the pathway's name as the first row and the following rows including nodes ans relations. Node-lines should include only the Entrez gene id of the node. Relation-lines include three elemnts separated with a space: Entrez gene id of the start node (first), Entrez gene id of the end node (second), and either + or - indicating activation or inhibition, respectively (third). A toy example with five nodes (Entrez gene ids 5269, 8828, 10938, 1203, 8824) and three relations (5269 and 8828 activating 10938, and 8828 inhibiting 1203) is given below.
+File format for the user defined pathways in **pathwayadress** is a .txt file. Each pathway file should include the pathway's name as the first row and the following rows including nodes and relations. Node-lines should include only the Entrez gene id of the node. Relation-lines include three elemnts separated with a space: Entrez gene id of the start node (first), Entrez gene id of the end node (second), and either + or - indicating activation or inhibition, respectively (third). A toy example with five nodes (Entrez gene ids 5269, 8828, 10938, 1203, 8824) and three relations (5269 and 8828 activating 10938, and 8828 inhibiting 1203) is given below.
 
 Pathway name here  
 5269  
