@@ -48,7 +48,10 @@ Maria K. Jaakkola
 
 \examples{
 # Run PAL for data frame mydata, which includes samples from two groups to obtain pathway activity scores.
-# labels = rep(c(0,1), times=c(20,18))
+# info = read.table("ExampleInfo.txt", sep="\t", quote="", stringsAsFactors=F)
+# mydata = read.table("ExampleData.txt", sep="\t", quote="", stringsAsFactors=F)
+# labels = rep(0, ncol(mydata))
+# labels[grep("Case", colnames(mydata))] = 1
 # timetodiagnosis = as.numeric(info[colnames(mydata), "TimeToDiagnosis"])
 # res = PAL(mydata, grouplabels=labels, info=info[colnames(mydata),c("Age","Donor")], neutralize=c(T,F), mainfeature=timetodiagnosis)
 }
