@@ -21,8 +21,7 @@ PAL = function(data, grouplabels, pathwayadress=NULL, datatype="rnaseq",
   if(!("PASI" %in% (.packages()))) library(PASI)
   
   # Check and initialize input parameters
-  parameters = CheckInput(data, grouplabels, pathwayadress, datatype, noisedefault, score, 
-                          nodemin, info, mainfeature)
+  parameters = CheckInput(data, grouplabels, pathwayadress, datatype, noisedefault, score, nodemin)
   originalgenedata = parameters[[1]]
   noisedefault = parameters[[2]]
   mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
