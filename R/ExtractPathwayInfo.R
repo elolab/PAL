@@ -6,15 +6,15 @@ ExtractPathwayInfo = function(pathways, results, nodevalues, relationvalues=NA){
   
   pathways = pathways[gsub(":.*", "", rownames(results))]
   
-  # Extract the number of measured nodes (median over samples) from each pathway and the proportion of inhibitory nodes
+  # Extract the number of measured nodes (median over samples) from each pathway and the proportion of group nodes
   measurednodes = unlist(lapply(nodevalues, function(x){median(colSums(!is.na(x)))}))
-  genenodeproportion = mapply(function(x,y){
+  groupnodeproportion = mapply(function(x,y){
     ids = rownames(y)
     nodes = x$nodeinfo[x$nodeinfo$Id %in% ids,]
-    return(sum(nodes$Type == "gene")/nrow(nodes))
+    return(sum(nodes$Type != "gene")/nrow(nodes))
   }, x=pathways, y=nodevalues)
   
-  # If available, extract the number of analysed relations and proportion of relations that should be inactive when the pathway is active
+  # If available, extract the number of analysed relations and proportion of inhibiting relations
   if(is.list(relationvalues)){
     measuredrelations = unlist(lapply(relationvalues, function(x){median(colSums(!is.na(x)))}))
     inhibitingrelations = mapply(function(x,y){
@@ -25,12 +25,12 @@ ExtractPathwayInfo = function(pathways, results, nodevalues, relationvalues=NA){
   }
   
   # Collect extracted info into a matrix
-  if(is.na(relationvalues)){
-    info = cbind(measurednodes, inhibitingnodes)
-    colnames(info) = c("MeasuredNodes", "GeneNodeProportion")
+  if(!is.list(relationvalues)){
+    info = cbind(measurednodes, groupnodeproportion)
+    colnames(info) = c("MeasuredNodes", "GroupNodeProportion")
   } else{
-    info = cbind(cbind(measurednodes, measuredrelations), cbind(genenodeproportions, inhibitingrelations))
-    colnames(info) = c("MeasuredNodes", "MeasuredRelations", "GeneNodeProportion", "InhibitingRelationProportion")
+    info = cbind(cbind(measurednodes, measuredrelations), cbind(groupnodeproportion, inhibitingrelations))
+    colnames(info) = c("MeasuredNodes", "MeasuredRelations", "GroupNodeProportion", "InhibitingRelationProportion")
   }
   rownames(info) = rownames(results)
   
