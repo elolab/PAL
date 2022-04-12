@@ -12,7 +12,7 @@
 
 PAL = function(data, grouplabels, pathwayadress=NULL, datatype="rnaseq",
                noisedefault="automatic", score="activity", nodemin=5, 
-               info=NA, neutralize=NA, mainfeature=NA){
+               info=NA, neutralize=NA, mainfeature=NA, seed=1234){
   
   oldwd = getwd()
   
@@ -98,10 +98,37 @@ PAL = function(data, grouplabels, pathwayadress=NULL, datatype="rnaseq",
   
   # Calculate significance level for the feature of interest
   if(!all(is.na(mainfeature))){
+    
     if(length(unique(mainfeature[!is.na(mainfeature)])) == 1){
       mainfeature[is.na(mainfeature)] = "Control"
     } 
-    significance = PickImportant(results, mainfeature)
+    
+    if(!is.na(neutralize[1])){
+      
+      index = which(neutralize == F)
+      
+      # For categorical main variable, only variables that overlap between the categories can be used
+      if(all(is.na(as.numeric(mainfeature))) & (length(index)>0)){
+        keepvariables = apply(info[,index,drop=F], 2, function(f){
+          groups = split(f, mainfeature)
+          keep = T
+          for(i in 1:length(groups)){
+            if(length(intersect(groups[[i]], unlist(groups[-i]))) == 0){
+              keep = F
+              break
+            }
+          }
+          return(keep)
+        })
+        index = index[keepvariables]
+      }
+      
+      if(length(index) > 0){
+        significance = PickImportant(results, mainfeature, seed, info[,index,drop=F])
+      } else significance = PickImportant(results, mainfeature, seed, NA)
+    } else{
+      significance = PickImportant(results, mainfeature, seed, NA)
+    }
     toreturn = list(pathwayscores=results, significance=significance, pathwayinfo=pathwayinfo)
   }
   
