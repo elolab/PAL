@@ -42,6 +42,16 @@ There are two options for argument **score**. The default one is "activity" and 
 
 The main function PAL returns a list with two or three elements: a matrix of pathway scores, a matrix of significance levels and coefficients (only if argument **mainfeature** is provided) of the analysed pathways, and an info matrix describing the analysed pathways. The pathway scores can be used for further analyses.
 
+### Example
+
+Run PAL for data frame mydata, which includes samples from two groups to obtain pathway activity scores.
+
+	info = read.table("ExampleInfo.txt", sep="\t", quote="", stringsAsFactors=F)
+	mydata = read.table("ExampleData.txt", sep="\t", quote="", stringsAsFactors=F)
+	labels = rep(0, ncol(mydata))
+	labels[grep("Case", colnames(mydata))] = 1
+	timetodiagnosis = as.numeric(info[colnames(mydata), "TimeToDiagnosis"])
+	res = PAL(mydata, grouplabels=labels, info=info[colnames(mydata),c("Age","Donor")], neutralize=c(T,F), mainfeature=timetodiagnosis)
 
 ##### References
 
