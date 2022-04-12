@@ -16,11 +16,17 @@ ExtractPathwayInfo = function(pathways, results, nodevalues, relationvalues=NA){
   
   # If available, extract the number of analysed relations and proportion of inhibiting relations
   if(is.list(relationvalues)){
-    measuredrelations = unlist(lapply(relationvalues, function(x){median(colSums(!is.na(x)))}))
+    measuredrelations = unlist(lapply(relationvalues, function(x){
+      if(any(!is.na(x))){
+        return(median(colSums(!is.na(x))))
+      } else return(0)
+      }))
     inhibitingrelations = mapply(function(x,y){
-      indices = which(rowSums(!is.na(y)) > 0)
-      relations = x$relationinfo[indices,]
-      return(sum(relations$Direction == "inhibition")/nrow(relations))
+      if(any(!is.na(y))){
+        indices = which(rowSums(!is.na(y)) > 0)
+        relations = x$relationinfo[indices,]
+        return(sum(relations$Direction == "inhibition")/nrow(relations))
+      } else return(NA)
     }, x=pathways, y=relationvalues)
   }
   
