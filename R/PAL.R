@@ -24,6 +24,7 @@ PAL = function(data, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activ
   mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
   
   # Read in and preprocess pathways from local file (if available) and KEGG API
+  cat("\n") + cat("Accessing and preprocessing pathways, this may take a while.") + cat("\n")
   pathways = PreProcessPathways(pathwayadress, useKEGG, data, nodemin, score)
   
   # Extract genes appearing in at least one pathway
@@ -39,10 +40,13 @@ PAL = function(data, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activ
   } 
   
   # Normalize the measurements
+  cat("\n") + cat("Scaling data...") + cat("\n")
   scaleddata = ScaleData(originalgenedata, grouplabels, score)
   
   # Drop genes that don't appear in any pathway
   genedata = scaleddata[rownames(scaleddata) %in% pathwaygenes, ]
+  
+  cat("\n") + cat("Starting to process the scaled measurements...") + cat("\n")
   
   # Calculate initial node values (NA for missing values)
   nodevalues = MeasurementsToNodes(pathways, genedata)
@@ -77,6 +81,8 @@ PAL = function(data, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activ
   rownames(results) = paste(names(pathways), unlist(lapply(pathways, function(p) p$pathwayname)), sep=": ")
   colnames(results) = colnames(genedata)
   
+  cat("\n") + cat("Pathway scores calculated, extracting pathway information for reporting") + cat("\n")
+  
   # Extract pathway info
   if(score=="activity"){
     pathwayinfo = ExtractPathwayInfo(pathways, results, nodevalues, relationvalues)
@@ -91,6 +97,8 @@ PAL = function(data, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activ
   # Calculate significance level for the feature of interest
   if(!all(is.na(mainfeature))){
     
+	cat("\n") + cat("Calculating significance levels...") + cat("\n")
+	
     if(length(unique(mainfeature[!is.na(mainfeature)])) == 1){
       mainfeature[is.na(mainfeature)] = "Control"
     } 
@@ -124,5 +132,6 @@ PAL = function(data, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activ
     toreturn = list(pathwayscores=results, significance=significance, pathwayinfo=pathwayinfo)
   }
   
+  cat("\n") + cat("Done!") + cat("\n")
   return(toreturn)
 }
