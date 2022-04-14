@@ -33,6 +33,6 @@ Case3_5.9	5.9	Case3	0.0999999999999996
 Case3_7.4	7.4	Case3	-1.4
 Case3_8.1	8.1	Case3	-2.1
 Case4_6.4	6.4	Case4	1.2
-Case4_6.4	6.5	Case4	1.1
+Case4_6.5	6.5	Case4	1.1
 Case4_7.1	7.1	Case4	0.5
 Case4_7.6	7.6	Case4	0
