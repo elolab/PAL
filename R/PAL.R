@@ -10,8 +10,7 @@
 #        "mainfeature" is a vector (corresp. to samples) including the feature whose significance is calculated from the ready pathway scores
 # OUTPUT: Returns a list of 1) pathway scores, 2) pathways' significance levels, and 3) pathway info. 
 
-PAL = function(data, grouplabels, pathwayadress=NULL, datatype="rnaseq",
-               noisedefault="automatic", score="activity", nodemin=5, 
+PAL = function(data, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, 
                info=NA, neutralize=NA, mainfeature=NA, seed=1234){
   
   oldwd = getwd()
@@ -21,18 +20,11 @@ PAL = function(data, grouplabels, pathwayadress=NULL, datatype="rnaseq",
   if(!("PASI" %in% (.packages()))) library(PASI)
   
   # Check and initialize input parameters
-  parameters = CheckInput(data, grouplabels, pathwayadress, datatype, noisedefault, score, nodemin)
-  originalgenedata = parameters[[1]]
-  noisedefault = parameters[[2]]
+  originalgenedata = CheckInput(data, grouplabels, pathwayadress, useKEGG, score, nodemin)
   mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
   
-  # Detect noise
-  if(is.na(noisedefault) | is.numeric(noisedefault)){
-    noiselevel = noisedefault
-  } else noiselevel = DetectNoise(originalgenedata, noisedefault)
-  
   # Read in and preprocess pathways from local file (if available) and KEGG API
-  pathways = PreProcessPathways(pathwayadress, data, nodemin, score)
+  pathways = PreProcessPathways(pathwayadress, useKEGG, data, nodemin, score)
   
   # Extract genes appearing in at least one pathway
   pathwaygenes = unlist(lapply(pathways, function(x){
@@ -47,7 +39,7 @@ PAL = function(data, grouplabels, pathwayadress=NULL, datatype="rnaseq",
   } 
   
   # Normalize the measurements
-  scaleddata = ScaleData(originalgenedata, grouplabels, noiselevel, score)
+  scaleddata = ScaleData(originalgenedata, grouplabels, score)
   
   # Drop genes that don't appear in any pathway
   genedata = scaleddata[rownames(scaleddata) %in% pathwaygenes, ]
