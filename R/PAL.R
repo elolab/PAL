@@ -19,6 +19,7 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   if(!("data.frame" %in% class(info))) stop("Argument 'info' should be a data frame.")
   message = "Arguments 'grouplabels', 'neutralize' and 'mainfeature' should be either NA or names of columns in argument 'info'."
   if(!all(c(grouplabels,neutralize,mainfeature) %in% c(NA, colnames(info)))) stop(message)
+  if(length(mainfeature) > 1) stop("Only one 'mainfeatrure' can be used.")
   
   # Extract arguments from info
   grouplabelindex = match(grouplabels, colnames(info), 0)
