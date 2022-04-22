@@ -43,6 +43,7 @@ The main function PAL returns a list with two or three elements: a matrix of pat
 ### Example
 
 Run PAL for data frame exampleData, which includes samples from two groups to obtain pathway activity scores. Data frame exampleInfo contains columns 'Age', 'Donor', 'TimeToDiagnosis', and 'SampleGroup'.
+
 	library(PAL)
 	res = PAL(data=exampleData, info=exampleInfo, grouplabels="SampleGroup", neutralize="Age", mainfeature="TimeToDiagnosis")
 
