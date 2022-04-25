@@ -38,17 +38,13 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
     neutralize = c(colnames(info) %in% neutralize)
   }
   
-  # Ensure that functions from packages MASS and PASI are ready to be used
-  if(!("MASS" %in% (.packages()))) library(MASS)
-  if(!("PASI" %in% (.packages()))) library(PASI)
-  
   # Check and initialize input parameters
-  originalgenedata = CheckInput(data, grouplabels, pathwayadress, useKEGG, score, nodemin)
+  originalgenedata = PASI::CheckInput(data, grouplabels, pathwayadress, useKEGG, score, nodemin)
   mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
   
   # Read in and preprocess pathways from local file (if available) and KEGG API
   cat("\n") + cat("Accessing and preprocessing pathways, this may take a while.") + cat("\n")
-  pathways = PreProcessPathways(pathwayadress, useKEGG, data, nodemin, score)
+  pathways = PASI:::PreProcessPathways(pathwayadress, useKEGG, data, nodemin, score)
   
   # Extract genes appearing in at least one pathway
   pathwaygenes = unlist(lapply(pathways, function(x){
@@ -64,7 +60,7 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   
   # Normalize the measurements
   cat("\n") + cat("Scaling data...") + cat("\n")
-  scaleddata = ScaleData(originalgenedata, grouplabels, score)
+  scaleddata = PASI::ScaleData(originalgenedata, grouplabels, score)
   
   # Drop genes that don't appear in any pathway
   genedata = scaleddata[rownames(scaleddata) %in% pathwaygenes, ]
@@ -72,7 +68,7 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   cat("\n") + cat("Starting to process the scaled measurements...") + cat("\n")
   
   # Calculate initial node values (NA for missing values)
-  nodevalues = MeasurementsToNodes(pathways, genedata)
+  nodevalues = PASI::MeasurementsToNodes(pathways, genedata)
   
   # Drop pathways with less than nodemin measured nodes for any sample
   droppathways = unlist(lapply(nodevalues, function(x) all(colSums(!is.na(x)) < nodemin)))
@@ -85,19 +81,19 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   } 
   
   # Detect structural info from pathways
-  pathwaystatistics = ExtractPathwayStatistics(pathways)
-  topologyvalues = CalculateTopologyFactors(pathways, pathwaystatistics)
+  pathwaystatistics = PASI::ExtractPathwayStatistics(pathways)
+  topologyvalues = PASI::CalculateTopologyFactors(pathways, pathwaystatistics)
   
   # Process the node values with feedback and calculate pathway scores
   if(score=="deregulation"){
-    nodevalues = ConsidereFeedBack(nodevalues, pathways, pathwaystatistics$occurrences)
-    results = CalculatePathwayValues_Deregulation(nodevalues, topologyvalues)
+    nodevalues = PASI::ConsidereFeedBack(nodevalues, pathways, pathwaystatistics$occurrences)
+    results = PASI::CalculatePathwayValues_Deregulation(nodevalues, topologyvalues)
   }
   
   # Calculate relation values and pathway scores
   if(score=="activity"){
-    relationvalues = MeasurementsToRelations(pathways, genedata)
-    results = CalculatePathwayValues_Activity(nodevalues, relationvalues, topologyvalues)
+    relationvalues = PASI::MeasurementsToRelations(pathways, genedata)
+    results = PASI::CalculatePathwayValues_Activity(nodevalues, relationvalues, topologyvalues)
   }
   
   # Add row and column names to pathway results
