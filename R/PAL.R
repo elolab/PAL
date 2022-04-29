@@ -15,11 +15,8 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   
   oldwd = getwd()
   
-  # Check that data frame 'info' is properly given
-  if(!("data.frame" %in% class(info))) stop("Argument 'info' should be a data frame.")
-  message = "Arguments 'grouplabels', 'neutralize' and 'mainfeature' should be either NA or names of columns in argument 'info'."
-  if(!all(c(grouplabels,neutralize,mainfeature) %in% c(NA, colnames(info)))) stop(message)
-  if(length(mainfeature) > 1) stop("Only one 'mainfeatrure' can be used.")
+  # Check and initialize PAL specific input parameters
+  mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
   
   # Extract arguments from info
   grouplabelindex = match(grouplabels, colnames(info), 0)
@@ -27,6 +24,7 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   if(ncol(info) < 2){
     info = NA
   } else info = info[,-grouplabelindex,drop=FALSE]
+  if(length(mainfeature) > 1) stop("Length of argument 'mainfeature' should be 1.")
   if(!is.na(mainfeature)){
     mainfeatureindex = match(mainfeature, colnames(info), 0)
     mainfeature = info[,mainfeatureindex]
@@ -34,13 +32,12 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
       info = NA
     } else info = info[,-mainfeatureindex,drop=FALSE]
   }
-  if(!is.na(neutralize)){
+  if(!is.na(neutralize[1])){
     neutralize = c(colnames(info) %in% neutralize)
   }
   
-  # Check and initialize input parameters
+  # Check and initialize input parameters related to general pathway analysis
   originalgenedata = PASI::CheckInput(data, grouplabels, pathwayadress, useKEGG, score, nodemin)
-  mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
   
   # Read in and preprocess pathways from local file (if available) and KEGG API
   cat("\n") + cat("Accessing and preprocessing pathways, this may take a while.") + cat("\n")
