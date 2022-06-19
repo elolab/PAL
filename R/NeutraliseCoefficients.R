@@ -4,7 +4,7 @@
 #        'donor' is a character vector telling a donor for each sample in 'data'. Can be NA
 # Output: Returns a version of 'data' so that all pathway genes have been neutralised from the 
 #         effect of given variables (e.g. age).
-NeutraliseCoefficients = function(data, info, neutralise, userandom, labels, pathwaygenes, neutralisationformula=NULL, neutralisationmodel="rlm"){
+NeutraliseCoefficients = function(data, info, neutralise, userandom, labels, pathwaygenes, neutralisationformula=NULL, neutralisationmodel="lmer"){
   
   # Preprocess inputs
   pathwaygenes = intersect(pathwaygenes, rownames(data))
