@@ -5,7 +5,7 @@
 Pathway Analysis of Longitudinal data
 }
 \description{
-Main function (and the only one for external use) of PAL performs sophisticated pathway analysis allowing complex study design, such as longitudinal data. The effect of some variables can be neutralised (see arguments 'info' and 'neutralize') prior to the pathway analysis.
+Main function (and the only one for external use) of PAL performs sophisticated pathway analysis allowing complex study design, such as longitudinal data. The effect of some variables can be neutralised (see arguments 'info' and 'neutralise') prior to the pathway analysis.
 }
 \usage{
 PAL(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, neutralize=NA, mainfeature=NA, seed=1234)
@@ -62,7 +62,7 @@ Maria K. Jaakkola
 \examples{
 # Run PAL for data frame exampleData, which includes samples from two groups to obtain pathway activity scores. Data frame exampleInfo contains columns 'Age', 'Donor', 'TimeToDiagnosis', and 'SampleGroup'.
 # library(PAL)
-# res = PAL(data=exampleData, info=exampleInfo, grouplabels="SampleGroup", neutralize="Age", mainfeature="TimeToDiagnosis")
+# res = PAL(data=exampleData, info=exampleInfo, grouplabels="SampleGroup", neutralise="Age", mainfeature="TimeToDiagnosis")
 }
 
 \keyword{ design }

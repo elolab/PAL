@@ -11,7 +11,7 @@
 # OUTPUT: Returns a list of 1) pathway scores, 2) pathways' significance levels, and 3) pathway info. 
 
 PAL = function(data, info, grouplabels, neutralise=NULL, mainfeature=NULL, userandom=NULL, neutralisationformula=NULL, pathwayformula=NULL, 
-               neutralisationmodel="rlm", pathwaymodel="rlmer",  pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, seed=1234){
+               neutralisationmodel="lmer", pathwaymodel="lmer",  pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, seed=1234){
   
   oldwd = getwd()
   
