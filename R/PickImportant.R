@@ -37,7 +37,7 @@ PickImportant = function(data, mainfeature, seed, info){
       expressionandinfo = as.data.frame(cbind(cbind(as.numeric(usedata[i,]), feature), info))
       colnames(expressionandinfo) = c("Expression","feature",colnames(info))
       
-      modelres = rlm(Expression~., data=expressionandinfo)
+      modelres = MASS::rlm(Expression~., data=expressionandinfo)
       coefficient[i,coefnames] = modelres$coefficients[coefnames]
     }
     
@@ -48,7 +48,7 @@ PickImportant = function(data, mainfeature, seed, info){
       for(j in 1:nrow(usedata)){
         tempdata = as.data.frame(cbind(cbind(as.numeric(usedata[j,]), tempfeature), info))
         colnames(tempdata) = c("Expression","tempfeature",colnames(info))
-        coefs[i,j,featurenames] = rlm(Expression~., data=tempdata)$coefficients[featurenames]
+        coefs[i,j,featurenames] = MASS::rlm(Expression~., data=tempdata)$coefficients[featurenames]
       }
     }
     
@@ -58,7 +58,7 @@ PickImportant = function(data, mainfeature, seed, info){
     # Fit model and collect the coefficient
     for(i in 1:nrow(data)){
       
-      modelres = rlm(as.numeric(usedata[i,])~feature)
+      modelres = MASS::rlm(as.numeric(usedata[i,])~feature)
       coefficient[i,coefnames] = modelres$coefficients[coefnames]
     }
     
@@ -67,7 +67,7 @@ PickImportant = function(data, mainfeature, seed, info){
       set.seed(seed+i)
       tempfeature = sample(feature, size=length(feature), replace=FALSE)
       for(j in 1:nrow(usedata)){
-        coefs[i,j,featurenames] = rlm(as.numeric(usedata[j,])~tempfeature)$coefficients[featurenames]
+        coefs[i,j,featurenames] = MASS::rlm(as.numeric(usedata[j,])~tempfeature)$coefficients[featurenames]
       }
     }
   }

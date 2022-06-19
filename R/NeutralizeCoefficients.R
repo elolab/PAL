@@ -37,7 +37,7 @@ NeutralizeCoefficients = function(data, info, neutralize, labels, pathwaygenes, 
     colnames(expressionandinfo) = c("Expression",colnames(controlinfo))
     
     # Calculate coefficients based on control samples
-    coefs_cntrl = rlm(Expression~., data=expressionandinfo)$coefficients
+    coefs_cntrl = MASS::rlm(Expression~., data=expressionandinfo)$coefficients
     
     # Record those coefficients
     shared = intersect(names(coefs_cntrl), colnames(coefficients))

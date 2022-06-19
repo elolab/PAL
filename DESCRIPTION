@@ -7,5 +7,6 @@ Author: Maria K. Jaakkola
 Maintainer: Maria K. Jaakkola <maria.jaakkola@utu.fi>
 Description: PAL provides pathway values (KEGG pathways) for each sample in given gene expression data and the pathways' significance levels according to the given variable. PAL uses pathway method PASI for its basic functionalities.
 Imports: stats, utils, MASS, PASI
+Depends: R (>= 3.5.0)
 LazyData: true
 License: GPL-2

@@ -7,34 +7,33 @@
 # OUTPUT: Checks that all arguments are valid (gives an error if not) and sets some default values. 
 
 CheckInput_PAL = function(data, grouplabels, info, neutralise, mainfeature){
+
+  # Check that 'info' is a data frame
+  if(!("data.frame" %in% class(info))) stop("Argument 'info' should be a data frame.")
   
-  # Check that 'mainfeature' is either NA or a vector
-  if(length(mainfeature) == length(grouplabels)){
-    if(length(unique(grouplabels)) > 1) mainfeature[grouplabels == 0] = NA
-  } else{
-    if(length(mainfeature) == 1){
-      if(!is.na(mainfeature)) stop("Argument 'mainfeature' should be either NA or a vector of length ncol(data).")
-    } else stop("Argument 'mainfeature' should be either NA or a vector of length ncol(data).")
-  }
+  # Check that the rows of 'info' correspond to the columns of 'data'
+  if(nrow(info) != ncol(data)) stop("The number of rows in 'info' should equal to the number of columns in 'data'.")
   
-  if(is.data.frame(info)){
-    if(nrow(info) != ncol(data)){
-      stop("The number of rows in 'info' should equal to the number of columns in 'data'.")
-    }
-    
-    # Check that info is ok
-    if(any(is.na(info))){
-      stop("'info' should not contain missing values (NA) if it is a data frame.")
-    }
-  } else{
-    if(!is.na(info)) stop("'info' should be either NA or a data frame.")
-  }
+  # Check that 'neutralize' and 'mainfeature' are either NA or columns of 'info'
+  message = "Arguments 'neutralize' and 'mainfeature' should be either NA or names of columns in argument 'info'."
+  if(!all(c(neutralise,mainfeature) %in% c(NA, colnames(info)))) stop(message)
+  if((NA %in% neutralise) & any(colnames(info) %in% neutralise)) stop("Argument 'neutralize' can be either NA or name(s) of column(s) in 'info', but not mix both.")
   
-  # Check that neutralise is NA or a logical vector and its length equals to the number of columns in 'info'
-  if(!is.na(neutralise[1])){
-    if(!is.logical(neutralise)) stop("Argument 'neutralize' should be either NA or a logical vector.")
-    if(length(neutralise) != ncol(info)) stop("Length of argument 'neutralize' (if not NA) should equal to the number of columns in 'info'.")
-  }
+  # Check that there is maximum of one main feature
+  if(length(mainfeature) > 1) stop("Only one 'mainfeature' can be used.")
+  
+  # Check that sample groups are defined
+  if(!(grouplabels %in% colnames(info))) stop("Argument 'grouplabels' should be a name of a column in argument 'info'.")
+  
+  # Check that no other column than possibly 'mainfeature' in 'info' has missing values
+  keepcols = setdiff(colnames(info), mainfeature)
+  if(any(is.na(info[,keepcols,drop=FALSE]))) stop("data frame 'info' can contain missing values (NA) only in the column identified by 'mainfeature'.")
+ 
+  
+  # Check that 'mainfeature' is either NA or a vector (done already in PAL)
+  #if(length(mainfeature) == length(grouplabels)){
+  #  if(length(unique(grouplabels)) > 1) mainfeature[grouplabels == 0] = NA
+  #} 
   
   return(mainfeature)
 }
