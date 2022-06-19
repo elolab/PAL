@@ -2,7 +2,7 @@
 #
 #
 #
-PickImportant_lmer_sampling = function(data, mainvariable, userandom, info, pathwayformula, seed, n=1000){ 
+PickImportant_lmer = function(data, mainvariable, userandom, info, pathwayformula, seed, n=1000){ 
   
   # Pick samples with the main feature defined (if the main is an interaction term not having a col in info, skip)
   if(mainvariable %in% colnames(info)){
