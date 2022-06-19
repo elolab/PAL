@@ -10,31 +10,20 @@
 #        "mainfeature" is a vector (corresp. to samples) including the feature whose significance is calculated from the ready pathway scores
 # OUTPUT: Returns a list of 1) pathway scores, 2) pathways' significance levels, and 3) pathway info. 
 
-PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, 
-               neutralize=NA, mainfeature=NA, seed=1234){
+PAL = function(data, info, grouplabels, neutralise=NULL, mainfeature=NULL, userandom=NULL, neutralisationformula=NULL, pathwayformula=NULL, 
+               neutralisationmodel="rlm", pathwaymodel="rlmer",  pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, seed=1234){
   
   oldwd = getwd()
   
-  # Check and initialize PAL specific input parameters
-  mainfeature = CheckInput_PAL(data, grouplabels, info, neutralize, mainfeature)
+  # Check and initialise PAL specific input parameters
+  mainfeature = CheckInput_PAL(data, info, grouplabels, neutralise, mainfeature, userandom, neutralisationformula, pathwayformula, neutralisationmodel, pathwaymodel)
   
   # Extract arguments from info
   grouplabelindex = match(grouplabels, colnames(info), 0)
   grouplabels = info[,grouplabelindex]
   if(ncol(info) < 2){
-    info = NA
+    info = NULL
   } else info = info[,-grouplabelindex,drop=FALSE]
-  if(length(mainfeature) > 1) stop("Length of argument 'mainfeature' should be 1.")
-  if(!is.na(mainfeature)){
-    mainfeatureindex = match(mainfeature, colnames(info), 0)
-    mainfeature = info[,mainfeatureindex]
-    if(ncol(info) < 2){
-      info = NA
-    } else info = info[,-mainfeatureindex,drop=FALSE]
-  }
-  if(!is.na(neutralize[1])){
-    neutralize = c(colnames(info) %in% neutralize)
-  }
   
   # Check and initialize input parameters related to general pathway analysis
   originalgenedata = PASI::CheckInput(data, grouplabels, pathwayadress, useKEGG, score, nodemin)
@@ -49,10 +38,10 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
     return(entrez)
   }))
   
-  # Neutralize effect of coefficient in 'info' from pathway genes
-  if(TRUE %in% neutralize){
-    cat("\n") + cat("Neutralizing coefficients...") + cat("\n")
-    originalgenedata = NeutralizeCoefficients(originalgenedata, info, neutralize, grouplabels, pathwaygenes, mainfeature)
+  # Neutralise the effect of wanted coefficients in 'info' from pathway genes
+  if(!(is.null(neutralise))){
+    cat("\n") + cat("Neutralising coefficients (takes time)...") + cat("\n")
+    originalgenedata = NeutraliseCoefficients(originalgenedata, info, neutralise, userandom, grouplabels, pathwaygenes, neutralisationformula, neutralisationmodel)
   } 
   
   # Normalize the measurements
@@ -111,40 +100,12 @@ PAL = function(data, info, grouplabels, pathwayadress=NULL, useKEGG=TRUE, score=
   toreturn = list(pathwayscores=results, pathwayinfo=pathwayinfo)
   
   # Calculate significance level for the feature of interest
-  if(!all(is.na(mainfeature))){
-    
-	cat("\n") + cat("Calculating significance levels...") + cat("\n")
-	
-    if(length(unique(mainfeature[!is.na(mainfeature)])) == 1){
-      mainfeature[is.na(mainfeature)] = "Control"
-    } 
-    
-    if(!is.na(neutralize[1])){
-      
-      index = which(neutralize == FALSE)
-      
-      # For categorical main variable, only variables that overlap between the categories can be used
-      if(all(is.na(as.numeric(mainfeature))) & (length(index)>0)){
-        keepvariables = apply(info[,index,drop=FALSE], 2, function(f){
-          groups = split(f, mainfeature)
-          keep = TRUE
-          for(i in 1:length(groups)){
-            if(length(intersect(groups[[i]], unlist(groups[-i]))) == 0){
-              keep = FALSE
-              break
-            }
-          }
-          return(keep)
-        })
-        index = index[keepvariables]
-      }
-      
-      if(length(index) > 0){
-        significance = PickImportant(results, mainfeature, seed, info[,index,drop=FALSE])
-      } else significance = PickImportant(results, mainfeature, seed, NA)
-    } else{
-      significance = PickImportant(results, mainfeature, seed, NA)
-    }
+  if(!is.null(mainfeature)){
+    cat("\n") + cat("Calculating significance levels (takes time)...") + cat("\n")
+    significance = switch(pathwaymodel, 
+                          rlm = PickImportant_rlm(results, mainfeature, userandom, info, pathwayformula, seed, n=1000),
+                          rlmer = PickImportant_rlmer(results, mainfeature, userandom, info, pathwayformula),
+                          lmer = PickImportant_lmer(results, mainfeature, userandom, info, pathwayformula, seed, n=1000))
     toreturn = list(pathwayscores=results, significance=significance, pathwayinfo=pathwayinfo)
   }
   

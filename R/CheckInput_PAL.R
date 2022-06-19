@@ -6,7 +6,7 @@
 #        "score" is the score type for final output (character 'activity' or 'deregulation').
 # OUTPUT: Checks that all arguments are valid (gives an error if not) and sets some default values. 
 
-CheckInput_PAL = function(data, grouplabels, info, neutralise, mainfeature){
+CheckInput_PAL = function(data, info, grouplabels, neutralise, mainfeature, userandom, neutralisationformula, pathwayformula, neutralisationmodel, pathwaymodel){
 
   # Check that 'info' is a data frame
   if(!("data.frame" %in% class(info))) stop("Argument 'info' should be a data frame.")
@@ -14,26 +14,72 @@ CheckInput_PAL = function(data, grouplabels, info, neutralise, mainfeature){
   # Check that the rows of 'info' correspond to the columns of 'data'
   if(nrow(info) != ncol(data)) stop("The number of rows in 'info' should equal to the number of columns in 'data'.")
   
-  # Check that 'neutralize' and 'mainfeature' are either NA or columns of 'info'
-  message = "Arguments 'neutralize' and 'mainfeature' should be either NA or names of columns in argument 'info'."
-  if(!all(c(neutralise,mainfeature) %in% c(NA, colnames(info)))) stop(message)
-  if((NA %in% neutralise) & any(colnames(info) %in% neutralise)) stop("Argument 'neutralize' can be either NA or name(s) of column(s) in 'info', but not mix both.")
-  
-  # Check that there is maximum of one main feature
-  if(length(mainfeature) > 1) stop("Only one 'mainfeature' can be used.")
-  
   # Check that sample groups are defined
   if(!(grouplabels %in% colnames(info))) stop("Argument 'grouplabels' should be a name of a column in argument 'info'.")
+  if(all(info[,grouplabels] != 0)) stop("In 'info', the column 'grouplabels' should include 0's to indicate control samples.")
   
-  # Check that no other column than possibly 'mainfeature' in 'info' has missing values
-  keepcols = setdiff(colnames(info), mainfeature)
-  if(any(is.na(info[,keepcols,drop=FALSE]))) stop("data frame 'info' can contain missing values (NA) only in the column identified by 'mainfeature'.")
+  # Check that variables used in neutralisation step have some variation among control samples
+  if(is.null(neutralisationformula)){
+    usevariables = c(neutralise, userandom)
+    if(length(usevariables) > 0){
+      uniquevals = apply(info[info[,grouplabels]==0,usevariables,drop=FALSE], 2, function(v){return(length(unique(v)))})
+      if(any(uniquevals < 2)){
+        message = paste("Following variables can not be used in neutralisation step as they do not differ within control samples", 
+                        paste(usevariables[uniquevals < 2], collapse=", "), sep=": ")
+        stop(message)
+      }
+    }
+  }
+  
+  # Check argument 'neutralise'
+  if(!is.null(neutralise)){
+    if(!all(neutralise %in% colnames(info))) stop("Argument 'neutralise' should be either NULL or a vector of name(s) of a column(s) in argument 'info' (check spelling).")
+    # Are missing values ok?
+    if(any(info[,grouplabels] != 0)){ # Check that cases do not include categorical variables to be neutralised that are not represented among controls
+      categorical = neutralise[apply(info[,neutralise,drop=FALSE],2,function(x){all(is.na(as.numeric(x)))})]
+      if(length(categorical) > 0){
+        controlcategories = unique(unlist(info[info[,grouplabels]==0,categorical]))
+        othercategories = unique(unlist(info[info[,grouplabels]!=0,categorical]))
+        notrepresented = setdiff(unique(othercategories), unique(controlcategories))
+        if(length(notrepresented) > 0){
+          message = paste("Following categories are not presented in control samples, but should be neutralised for (not allowed)", paste(notrepresented,collapse=", "), sep=": ")
+          stop(message)
+        }
+      }
+    }
+  }
+  
+  # Check argument 'userandom'
+  if(!is.null(userandom)){
+    if(!all(userandom %in% colnames(info))) stop("Argument 'userandom' should be either NULL or a vector of name(s) of a column(s) in argument 'info' (check spelling).")
+    # Are missing values ok?
+  }
+  
+  # Check argument 'mainfeature'
+  if(!is.null(mainfeature) & is.null(pathwayformula)){
+    #if(length(mainfeature) > 1) stop("Only one 'mainfeature' (name of the column in 'info') can be used in this version of PAL.")
+    if(!(mainfeature %in% colnames(info))) stop("Argument 'mainfeature' should be either NULL or a name of a column in argument 'info' (check spelling).")
+  }
+  
+  # Check 'neutralisationformula' (note: neutralise can include only fixed effects)
+  if(!is.null(neutralisationformula)){
+    if(!any(class(neutralisationformula) %in% c("formula","character"))) stop("Argument 'neutralisationformula' should be either NULL, a character, or a formula.")
+    if(is.null(neutralise)) stop("If argument 'neutralisationformula' is not NULL, also argument 'neutralise' should be defined.")
+    sides = as.character(as.formula(neutralisationformula))
+    if(sides[2] != "Expression") stop("If defined, argument 'neutralisationformula' should have left hand side of Expression~")
+    fixed = unlist(strsplit(gsub("\\(.*\\)","",gsub(" ","",sides[3])), split="\\+"))
+    if(!all(neutralise %in% fixed)) stop("Variables in argument 'neutralise' should be fixed effects in argument 'neutralisationformula'.")
+    #random = unlist(strsplit(gsub("\\).*\\(","",gsub(" ","",sides[3])), split="\\+")) # needs fixing
+  }
  
+  # Check 'pathwayformula' 
   
-  # Check that 'mainfeature' is either NA or a vector (done already in PAL)
-  #if(length(mainfeature) == length(grouplabels)){
-  #  if(length(unique(grouplabels)) > 1) mainfeature[grouplabels == 0] = NA
-  #} 
+  # Check 'neutralisationmodel'
+  if(!(neutralisationmodel %in% c("rlm","lmer","rlmer"))) stop("Argument 'neutralisationmodel' should be one of the following characters: 'rlm', 'lmer', 'rlmer'.")
+  
+  # Check 'pathwaymodel'
+  if(!(pathwaymodel %in% c("rlm","lmer","rlmer"))) stop("Argument 'pathwaymodel' should be one of the following characters: 'rlm', 'lmer', 'rlmer'.")
+
   
   return(mainfeature)
 }
