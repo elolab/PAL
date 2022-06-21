@@ -11,6 +11,18 @@ CheckInput_PAL = function(data, info, grouplabels, neutralise, mainfeature, user
   # Check that 'info' is a data frame
   if(!("data.frame" %in% class(info))) stop("Argument 'info' should be a data frame.")
   
+  # Check that column names in info do not include spaces or notation used in formulas
+  includesspace = grep(" ", colnames(info), value=T)
+  if(length(includesspace) > 0){
+    message = paste("Please remove spaces from column names of 'info'", paste(includesspace, collapse=", "), sep=": ")
+    stop(message)
+  }
+  includessyntax = grep("\\+|\\-|\\*|\\(|\\)|\\:|\\||\\%", colnames(info), value=T)
+  if(length(includessyntax) > 0){
+    message = paste("Please remove formula syntax from following column names of 'info'", paste(includessyntax, collapse=", "), sep=": ")
+    stop(message)
+  }
+  
   # Check that the rows of 'info' correspond to the columns of 'data'
   if(nrow(info) != ncol(data)) stop("The number of rows in 'info' should equal to the number of columns in 'data'.")
   
@@ -56,9 +68,14 @@ CheckInput_PAL = function(data, info, grouplabels, neutralise, mainfeature, user
   }
   
   # Check argument 'mainfeature'
-  if(!is.null(mainfeature) & is.null(pathwayformula)){
+  if(!is.null(mainfeature)){
     #if(length(mainfeature) > 1) stop("Only one 'mainfeature' (name of the column in 'info') can be used in this version of PAL.")
-    if(!(mainfeature %in% colnames(info))) stop("Argument 'mainfeature' should be either NULL or a name of a column in argument 'info' (check spelling).")
+    mainpieces = unlist(strsplit(mainfeature, split=":"))
+    missingpieces = unique(setdiff(mainpieces, colnames(info)))
+    if(length(missingpieces) > 0){
+      message = paste("Argument 'mainfeature' contains following variables not present in 'info'", paste(missingpieces,collapse=", "), sep=": ")
+      stop(message)
+    } 
   }
   
   # Check 'neutralisationformula' (note: neutralise can include only fixed effects)
@@ -72,7 +89,14 @@ CheckInput_PAL = function(data, info, grouplabels, neutralise, mainfeature, user
     #random = unlist(strsplit(gsub("\\).*\\(","",gsub(" ","",sides[3])), split="\\+")) # needs fixing
   }
  
-  # Check 'pathwayformula' 
+  # Check 'pathwayformula'
+  if(!is.null(pathwayformula)){
+    if(!any(class(pathwayformula) %in% c("formula","character"))) stop("Argument 'pathwayformula' should be either NULL, a character, or a formula.")
+    if(is.null(mainfeature)) stop("If argument 'pathwayformula' is not NULL, also argument 'mainfeature' should be defined.")
+    sides = as.character(as.formula(pathwayformula))
+    if(sides[2] != "Score") stop("If defined, argument 'pathwayformula' should have left hand side of Score~")
+    if(length(grep(mainfeature, sides[3])) < 1) stop("Argument 'mainfeature' should be present in 'pathwayformula', if both are given.")
+  }
   
   # Check 'neutralisationmodel'
   if(!(neutralisationmodel %in% c("rlm","lmer","rlmer"))) stop("Argument 'neutralisationmodel' should be one of the following characters: 'rlm', 'lmer', 'rlmer'.")
