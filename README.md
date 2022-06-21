@@ -11,7 +11,7 @@ Vignette coming after summer vacations.
 The only mandatory input from the user are **data**, **info**, and **grouplabels**.
 | Input | Description |
 | ----------- | ----------- |
-| data | A data frame of normalized gene expression data in log2 scale (rows: Entrez genes, cols: samples) |
+| data | A data frame of normalized gene or protein expression data in log2 scale (rows: Entrez genes, cols: samples) |
 | info | A data frame including all variables to be used in the analysis as columns, see details below. Rows correspond to samples in **data**. Rows and columns should be named. |
 | grouplabels | Name of the column indicating sample groups in **info** |
 | neutralise | NULL (default) or name(s) of variable(s) (column(s) of **info**) that should be neutralised for prior to pathway analysis. The neutralised variables can be either numeric or character. |
