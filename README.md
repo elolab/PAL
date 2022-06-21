@@ -47,7 +47,7 @@ Pathway name here
 
 There are two options for argument **score**. The default one is "activity" and if it is selected, the final pathway scores indicate how active each pathway is in comparison to the other samples. Negative value indicate inactivity, value close to 0 normal activity, and positive value high activity. If **score** is set to "deregulation", the pathway scores indicate how normally the pathways behave as compared to a typical control sample. Value close to 0 means that the pathway is not deregulated and a high value means that it is.
 
-Notably, this version of PAL can not neutralise for variables not overlapping between the sample groups defined in **grouplabels**. Therefore, for example donor can be used as a random effect in model fitting, but can not be neutralised for.
+Notably, this version of PAL can not neutralise for variables not overlapping between the sample groups defined in **grouplabels**. Therefore, for example donor can be used as a random effect in model fitting, but can not be neutralised for (unless there are case and control samples drawn from the same donors).
 
 The main function PAL returns a list with two or three elements: a matrix of pathway scores, a matrix of significance levels and coefficients (only if argument **mainfeature** is provided) of the analysed pathways, and an info matrix describing the analysed pathways. The pathway scores can be used for further analyses.
 
