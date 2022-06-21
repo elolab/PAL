@@ -8,7 +8,7 @@ Vignette coming after summer vacations.
 
 ### Input and output
 
-The only mandatory input from the user are **data** and **grouplabels**.
+The only mandatory input from the user are **data**, **info**, and **grouplabels**.
 | Input | Description |
 | ----------- | ----------- |
 | data | A data frame of normalized gene expression data in log2 scale (rows: Entrez genes, cols: samples) |
