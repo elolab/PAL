@@ -49,7 +49,7 @@ Pathway name here
 
 There are two options for argument 'score'. The default one is "activity" and if it is selected, the final pathway scores indicate how active each pathway is in comparison to the other samples. Negative value indicate inactivity, value close to 0 normal activity, and positive value high activity. If 'score' is set to "deregulation", the pathway scores indicate how normally the pathways behave as compared to a typical control sample. Value close to 0 means that the pathway is not deregulated and a high value means that it is.
 
-Notably, this version of PAL can not neutralise for variables not overlapping between the sample groups defined in 'grouplabels'. Therefore, for example donor can be used in model fitting (i.e. appear as a column in 'info'), but can not be neutralised for (i.e. argument 'neutralize' can not include it).
+Notably, this version of PAL can not neutralise for variables not overlapping between the sample groups defined in 'grouplabels'. Therefore, for example donor can be used in model fitting, but can not be neutralised for (i.e. argument 'neutralise' can not include it).
 }
 
 \value{
