@@ -1,10 +1,8 @@
-# PAL description
+# Pathway Analysis of Longitudinal data (PAL)
 
 Pathway Analysis of Longitudinal data (PAL) is a pathway analysis tool that provides pathway values for each analysed sample and pathway separately. PAL allows the analysis of complex study designs such as longitudinal data and the effect of some variables (e.g. age) can be neutralised (see arguments **info** and **neutralise**) prior to the pathway analysis. Details about the algorithm are available in the original open access publication "Longitudinal pathway analysis using structural information with case studies in early type 1 diabetes" [1] (please cite it if you utilise PAL in your research). In case of bugs, missing documentation, or problems with installation, please contact us: maria.jaakkola@utu.fi
 
 PAL can be installed by opening R and typing devtools::install_github("elolab/PAL") (requires package devtools to be installed). Notably, usage of PAL requires installation of R packages PASI (devtools::install_github("elolab/PASI")) [2], lme4 [3], robustlmm [4], and lmerTest [5]. Packages lme4, robustlmm, and lmerTest are available from CRAN.
-
-Vignette coming after summer vacations.
 
 ### Input and output
 
