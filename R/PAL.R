@@ -1,22 +1,10 @@
-# INPUT: "data" is the gene expression data (rows: Entrez genes, cols: samples),
-#        "grouplabels" is an integer vector indicating samples groups (control: 0),
-#        "pathwayadress" is path to pathways,
-#        "datatype" is should be either "microarray" or "rnaseq",
-#        "noisedefault" is the default cutoff (numeric value) for real signal,
-#        "score" defines whether the returned values reflect activity (default) or deregulation,
-#        "nodemin" is the smallest number of measured nodes accepted for analysis,
-#        "info" includes variables (cols) to be used in neutralisation step (rows are samples),
-#        "neutralize" is a logical vector indicating the variables from info to be actually neutralised,
-#        "mainfeature" is a vector (corresp. to samples) including the feature whose significance is calculated from the ready pathway scores
-# OUTPUT: Returns a list of 1) pathway scores, 2) pathways' significance levels, and 3) pathway info. 
-
-PAL = function(data, info, grouplabels, neutralise=NULL, mainfeature=NULL, userandom=NULL, neutralisationformula=NULL, pathwayformula=NULL, 
-               neutralisationmodel="lmer", pathwaymodel="lmer",  pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, seed=1234){
+PAL = function(data, info, grouplabels, adjust=NULL, mainfeature=NULL, userandom=NULL, adjustmentformula=NULL, pathwayformula=NULL, 
+               adjustmentmodel="lmer", pathwaymodel="lmer",  pathwayadress=NULL, useKEGG=TRUE, score="activity", nodemin=5, seed=1234){
   
   oldwd = getwd()
   
   # Check and initialise PAL specific input parameters
-  mainfeature = CheckInput_PAL(data, info, grouplabels, neutralise, mainfeature, userandom, neutralisationformula, pathwayformula, neutralisationmodel, pathwaymodel)
+  mainfeature = CheckInput_PAL(data, info, grouplabels, adjust, mainfeature, userandom, adjustmentformula, pathwayformula, adjustmentmodel, pathwaymodel)
   
   # Extract arguments from info
   grouplabelindex = match(grouplabels, colnames(info), 0)
@@ -38,10 +26,10 @@ PAL = function(data, info, grouplabels, neutralise=NULL, mainfeature=NULL, usera
     return(entrez)
   }))
   
-  # Neutralise the effect of wanted coefficients in 'info' from pathway genes
+  # Adjust for the effect of wanted coefficients in 'info' from pathway genes
   if(!(is.null(neutralise))){
-    cat("\n") + cat("Neutralising coefficients (takes time)...") + cat("\n")
-    originalgenedata = NeutraliseCoefficients(originalgenedata, info, neutralise, userandom, grouplabels, pathwaygenes, neutralisationformula, neutralisationmodel)
+    cat("\n") + cat("Adjusting for coefficients (takes time)...") + cat("\n")
+    originalgenedata = NeutraliseCoefficients(originalgenedata, info, adjust, userandom, grouplabels, pathwaygenes, adjustmentformula, adjustmentmodel)
   } 
   
   # Normalize the measurements
